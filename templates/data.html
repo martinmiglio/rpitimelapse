@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html>
-   <body>
-      <img src="{{ url_for('static', filename=filename) }}">
-   </body>
+
+<head>
+   <style>
+      .image {
+         width: 100%;
+         height: auto;
+      }
+   </style>
+</head>
+
+<body>
+   <img class="image" src="{{ url_for('static', filename=filename) }}">
+</body>
+
 </html>
