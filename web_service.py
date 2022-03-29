@@ -2,7 +2,7 @@ import re
 import time
 from multiprocessing import Process
 from os import listdir
-from os.path import isfile, join
+from os.path import isfile, join, abspath
 
 import imageio
 from flask import Flask, render_template, request
@@ -10,21 +10,15 @@ from flask import Flask, render_template, request
 app = Flask(__name__)
 
 
-""" @app.route('/')
+@app.route('/')
 def index():
-    html_file = "render.html"
-    return render_template(html_file) """
-
-
-@app.route('/form')
-def form():
     return render_template('form.html')
 
 
 @app.route('/data', methods=['POST', 'GET'])
 def data():
     if request.method == 'GET':
-        return f"The URL /data is accessed directly. Try going to '/form' to submit form"
+        return f"The URL /data is accessed directly. Try going to '/' to submit form"
     if request.method == 'POST':
         form_data = request.form
         number_of_hours = data_to_hours(form_data.get('duration'))
@@ -46,7 +40,7 @@ def get_images(hours_ago):
     start_time = current_time - 3600 * hours_ago
     files = []
     for f in listdir(IMAGE_DIRECTORY):
-        if isfile(join(IMAGE_DIRECTORY, f)):
+        if isfile(abspath(join(IMAGE_DIRECTORY, f))):
             if float(re.search('img(.*).jpg', f).group(1)) > start_time:
                 files.append(f)
     return files
