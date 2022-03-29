@@ -63,5 +63,5 @@ def make_page():
 if __name__ == '__main__':
     plot_process = Process(target=make_page)
     plot_process.start()
-    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=8000)
+    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=80)
     plot_process.join()
