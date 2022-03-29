@@ -51,7 +51,8 @@ def get_images(hours_ago):
 
 def generate_gif(images):
     output_path = "static/render.gif"
-    remove(output_path)
+    if isfile(output_path):
+        remove(output_path)
     start_time = time.time()
     images[0].save(
         output_path,
