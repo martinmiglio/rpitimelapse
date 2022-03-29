@@ -1,3 +1,4 @@
+from glob import glob
 import re
 import time
 from os import listdir, remove
@@ -22,8 +23,7 @@ def data():
         form_data = request.form
         number_of_hours = data_to_hours(form_data.get('duration'))
         images_since = get_images(number_of_hours)
-        generate_gif(images_since)
-        return render_template('data.html', filename="render.gif")
+        return render_template('data.html', filename=generate_gif(images_since))
 
 
 def data_to_hours(button_string):
@@ -50,18 +50,21 @@ def get_images(hours_ago):
 
 
 def generate_gif(images):
-    output_path = "static/render.gif"
-    if isfile(output_path):
-        remove(output_path)
+    output_path = "static/"
+    file_name = f"render{int(time.time())}.gif"
+    file_list = glob(join(output_path, "*.gif"))
+    for f in file_list:
+        remove(f)
     start_time = time.time()
     images[0].save(
-        output_path,
+        join(output_path, file_name),
         save_all=True,
         optimize=True,
         append_images=images[1:],
         loop=0
     )
     print(f"Took {time.time()-start_time}s to render gif")
+    return output_path
 
 
 if __name__ == '__main__':
