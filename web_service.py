@@ -64,7 +64,7 @@ def generate_gif(images):
         loop=0
     )
     print(f"Took {time.time()-start_time}s to render gif")
-    return output_path
+    return file_name
 
 
 if __name__ == '__main__':
