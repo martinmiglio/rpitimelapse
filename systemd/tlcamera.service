@@ -1,0 +1,13 @@
+[Unit]
+Description=Camera Time Lapse Service through Python
+After=multi-user.target
+
+[Service]
+Type=simple
+User=root
+Restart=always
+WorkingDirectory=/home/pi/rpitimelapse
+ExecStart=/usr/bin/python3 /home/pi/rpitimelapse/camera_service.py
+
+[Install]
+WantedBy=multi-user.target
