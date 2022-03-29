@@ -7,6 +7,6 @@ import picamera
 WAIT_TIME = 60
 
 with picamera.PiCamera() as camera:
-    for filename in camera.capture_continuous(f'images/img{time.time().split(".")[0]}.jpg'):
+    for filename in camera.capture_continuous(f'images/img{int(time.time())}.jpg'):
         print(f"took a photo at {time.time()}")
         sleep(WAIT_TIME)
