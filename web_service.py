@@ -1,11 +1,10 @@
 import re
 import time
-from multiprocessing import Process
 from os import listdir
-from os.path import isfile, join, abspath
+from os.path import abspath, isfile, join
 
-import imageio
 from flask import Flask, render_template, request
+from PIL import Image
 
 app = Flask(__name__)
 
@@ -23,7 +22,7 @@ def data():
         form_data = request.form
         number_of_hours = data_to_hours(form_data.get('duration'))
         images_since = get_images(number_of_hours)
-        output_gif = generate_gif(images_since)
+        generate_gif(images_since)
         return render_template('data.html', filename="render.gif")
 
 
@@ -40,29 +39,28 @@ def get_images(hours_ago):
     start_time = int(current_time - 3600 * hours_ago)
     files = []
     for f in listdir(IMAGE_DIRECTORY):
-        if isfile(abspath(join(IMAGE_DIRECTORY, f))):
+        full_path = abspath(join(IMAGE_DIRECTORY, f))
+        if isfile(full_path):
             match = re.search('img(.*).jpg', f)
             if match is not None:
                 photo_time = int(match.group(1))
                 if photo_time > start_time and photo_time < current_time - 120:
-                    files.append(f)
+                    files.append(Image.open(full_path, mode='r'))
     return files
 
 
-def generate_gif(image_names):
+def generate_gif(images):
     output_path = "static/render.gif"
-    with imageio.get_writer(output_path, mode='I') as writer:
-        for image_name in image_names:
-            image = imageio.imread(f"images/{image_name}")
-            writer.append_data(image)
-
-
-def make_page():
-    pass
+    start_time = time.time()
+    images[0].save(
+        output_path,
+        save_all=True,
+        optimize=True,
+        append_images=images[1:],
+        loop=0
+    )
+    print(f"Took {time.time()-start_time}s to render gif")
 
 
 if __name__ == '__main__':
-    plot_process = Process(target=make_page)
-    plot_process.start()
     app.run(debug=True, use_reloader=False, host='0.0.0.0', port=80)
-    plot_process.join()
