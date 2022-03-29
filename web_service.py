@@ -41,8 +41,10 @@ def get_images(hours_ago):
     files = []
     for f in listdir(IMAGE_DIRECTORY):
         if isfile(abspath(join(IMAGE_DIRECTORY, f))):
-            if int(re.search('img(.*).jpg', f).group(1)) > start_time:
-                files.append(f)
+            match = re.search('img(.*).jpg', f)
+            if match is not None:
+                if int(match.group(1)) > start_time:
+                    files.append(f)
     return files
 
 
