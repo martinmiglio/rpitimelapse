@@ -37,11 +37,11 @@ def data_to_hours(button_string):
 def get_images(hours_ago):
     IMAGE_DIRECTORY = "images"
     current_time = time.time()
-    start_time = current_time - 3600 * hours_ago
+    start_time = int(current_time - 3600 * hours_ago)
     files = []
     for f in listdir(IMAGE_DIRECTORY):
         if isfile(abspath(join(IMAGE_DIRECTORY, f))):
-            if float(re.search('img(.*).jpg', f).group(1)) > start_time:
+            if int(re.search('img(.*).jpg', f).group(1)) > start_time:
                 files.append(f)
     return files
 
