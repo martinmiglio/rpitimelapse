@@ -78,9 +78,11 @@ def generate_video(image_names):
 
     cv2.destroyAllWindows()
     video.release()
-    system(f"ffmpeg -y -i {abspath(join(output_path,file_name))} -vcodec h264 -preset ultrafast {abspath(join(output_path,file_name))}")
+    input_file = join(output_path,file_name)
+    output_file = input_file.replace("render", "web_render")
+    system(f"ffmpeg -y -i {abspath(input_file)} -vcodec h264 -preset ultrafast {abspath(output_file)}")
     print(f"Took {time.time()-start_time}s to render gif")
-    return file_name
+    return output_file
 
 
 if __name__ == '__main__':
