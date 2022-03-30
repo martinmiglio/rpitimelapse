@@ -1,44 +1,13 @@
-import gc
 import re
 import time
+import cv2
 from glob import glob
 from os import listdir, remove
 from os.path import abspath, isfile, join
 
-import cv2
-from flask import Flask, render_template, request
-from PIL import Image, UnidentifiedImageError
-
+# choose codec according to format needed
 width = 1280
 height = 720
-
-app = Flask(__name__)
-
-
-@app.route('/')
-def index():
-    return render_template('form.html')
-
-
-@app.route('/data', methods=['POST', 'GET'])
-def data():
-    if request.method == 'GET':
-        return f"The URL /data is accessed directly. Try going to '/' to submit form"
-    if request.method == 'POST':
-        form_data = request.form
-        number_of_hours = data_to_hours(form_data.get('duration'))
-        images_since = get_images(number_of_hours)
-        video_name = generate_video(images_since)
-        del images_since
-        gc.collect()
-        return render_template('data.html', filename=video_name, width=width, height=height)
-
-
-def data_to_hours(button_string):
-    if not button_string:
-        return 0
-    value = int(re.search('[0-9]+', button_string).group())
-    return value*24 if "Day" in button_string else value
 
 
 def get_images(hours_ago):
@@ -59,12 +28,12 @@ def get_images(hours_ago):
 
 def generate_video(image_names):
     output_path = "static/"
-    file_name = f"render{int(time.time())}.webm"
-    file_list = glob(join(output_path, "*.webm"))
+    file_name = f"render{int(time.time())}.avi"
+    file_list = glob(join(output_path, "*.avi"))
     for f in file_list:
         remove(f)
     start_time = time.time()
-    fourcc = cv2.VideoWriter_fourcc(*'vp80')
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     video = cv2.VideoWriter(
         join(output_path, file_name),
         fourcc,
@@ -82,5 +51,4 @@ def generate_video(image_names):
     return file_name
 
 
-if __name__ == '__main__':
-    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=8000)
+generate_video(get_images(10))

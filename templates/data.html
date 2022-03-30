@@ -3,7 +3,7 @@
 
 <head>
    <style>
-      .image {
+      .vid {
          width: 100%;
          height: auto;
       }
@@ -11,7 +11,10 @@
 </head>
 
 <body>
-   <img class="image" src="{{ url_for('static', filename=filename) }}">
+   <video class="vid" autoplay="autoplay" controls="controls" preload="preload">
+      <source src="{{ url_for('static', filename=filename) }}" type="video/webm">
+      Your browser does not support the video tag.
+   </video>
 </body>
 
 </html>
