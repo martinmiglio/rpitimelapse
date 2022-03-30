@@ -6,7 +6,7 @@ import picamera
 WAIT_TIME = 60
 
 with picamera.PiCamera() as camera:
-    camera.resolution = (852, 480)
+    camera.resolution = (1280, 720)
     while True:
         camera.capture(f'images/img{int(time.time())}.jpg')
         print(f"took a photo at {int(time.time())}")
