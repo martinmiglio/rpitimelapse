@@ -2,7 +2,7 @@ import gc
 import re
 import time
 from glob import glob
-from os import listdir, remove
+from os import listdir, remove, system
 from os.path import abspath, isfile, join
 
 import cv2
@@ -59,12 +59,12 @@ def get_images(hours_ago):
 
 def generate_video(image_names):
     output_path = "static/"
-    file_name = f"render{int(time.time())}.webm"
-    file_list = glob(join(output_path, "*.webm"))
+    file_name = f"render{int(time.time())}.mp4"
+    file_list = glob(join(output_path, "*.mp4"))
     for f in file_list:
         remove(f)
     start_time = time.time()
-    fourcc = cv2.VideoWriter_fourcc(*'vp80')
+    fourcc = cv2.VideoWriter_fourcc(*'MP4V')
     video = cv2.VideoWriter(
         join(output_path, file_name),
         fourcc,
@@ -78,9 +78,10 @@ def generate_video(image_names):
 
     cv2.destroyAllWindows()
     video.release()
+    system(f"ffmpeg -i {join(output_path,file_name)} -vcodec h264 -preset ultrafast {join(output_path,file_name)}")
     print(f"Took {time.time()-start_time}s to render gif")
     return file_name
 
 
 if __name__ == '__main__':
-    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=80)
+    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=8000)
