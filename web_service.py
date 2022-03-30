@@ -1,3 +1,4 @@
+import gc
 import re
 import time
 from glob import glob
@@ -25,7 +26,10 @@ def data():
         form_data = request.form
         number_of_hours = data_to_hours(form_data.get('duration'))
         images_since = get_images(number_of_hours)
-        return render_template('data.html', filename=generate_gif(images_since))
+        gif_name = generate_gif(images_since)
+        del images_since
+        gc.collect()
+        return render_template('data.html', filename=gif_name)
 
 
 def data_to_hours(button_string):
