@@ -5,8 +5,6 @@ from glob import glob
 from os import listdir, remove
 from os.path import abspath, isfile, join
 
-from numpy import full
-
 from flask import Flask, render_template, request
 from PIL import Image, UnidentifiedImageError
 
@@ -54,7 +52,8 @@ def get_images(hours_ago):
                     try:
                         files.append(Image.open(full_path, mode='r'))
                     except UnidentifiedImageError:
-                        print(f"File at {full_path} not recognized, skipping...")
+                        print(
+                            f"File at {full_path} not recognized, skipping...")
     return files
 
 

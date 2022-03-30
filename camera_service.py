@@ -1,4 +1,3 @@
-# adapted from https://projects.raspberrypi.org/en/projects/raspberry-pi-zero-time-lapse-cam/4
 import time
 from time import sleep
 

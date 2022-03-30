@@ -11,8 +11,7 @@ A timelapse capture and viewing module for raspberry pi
 
 ### Install dependencies
 
-    sudo apt install libatlas3-base libgfortran5
-    sudo pip3 install numpy==1.21.4 imageio
+    sudo pip3 install -r requirements.txt
 
 ### Setup systemd services
 
