@@ -68,7 +68,7 @@ def generate_gif(images):
     images[0].save(
         join(output_path, file_name),
         save_all=True,
-        optimize=False,
+        optimize=True,
         append_images=images[1:],
         loop=0
     )
