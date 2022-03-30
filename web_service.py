@@ -40,7 +40,7 @@ def get_images(hours_ago):
     current_time = int(time.time())
     start_time = int(current_time - 3600 * hours_ago)
     files = []
-    for f in listdir(IMAGE_DIRECTORY):
+    for f in sorted(listdir(IMAGE_DIRECTORY)):
         full_path = abspath(join(IMAGE_DIRECTORY, f))
         if isfile(full_path):
             match = re.search('img(.*).jpg', f)
