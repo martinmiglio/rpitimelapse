@@ -80,7 +80,7 @@ def generate_video(image_names):
     video.release()
     input_file = join(output_path,file_name)
     output_file = file_name.replace("render", "web_render")
-    system(f"ffmpeg -y -i {abspath(input_file)} -vcodec h264 -preset ultrafast {join(output_path,abspath(output_file))}")
+    system(f"ffmpeg -y -i {abspath(input_file)} -vcodec h264 -preset ultrafast {abspath(join(output_path,output_file))}")
     print(f"Took {time.time()-start_time}s to render gif")
     return output_file
 
