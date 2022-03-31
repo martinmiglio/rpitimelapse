@@ -60,8 +60,8 @@ def get_images(hours_ago):
 def generate_video(image_names):
     output_path = "static/"
     file_name = f"render{int(time.time())}.avi"
-    file_list = glob(join(output_path, "*.mp4")
-                     ).append(glob(join(output_path, "*.avi")))
+    file_list = glob(join(output_path, "*.mp4")) + \
+        glob(join(output_path, "*.avi"))
     for f in file_list:
         remove(f)
     start_time = time.time()
