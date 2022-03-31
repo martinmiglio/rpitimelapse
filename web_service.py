@@ -59,12 +59,13 @@ def get_images(hours_ago):
 
 def generate_video(image_names):
     output_path = "static/"
-    file_name = f"render{int(time.time())}.mp4"
-    file_list = glob(join(output_path, "*.mp4"))
+    file_name = f"render{int(time.time())}.avi"
+    file_list = glob(join(output_path, "*.mp4")
+                     ).append(glob(join(output_path, "*.avi")))
     for f in file_list:
         remove(f)
     start_time = time.time()
-    fourcc = cv2.VideoWriter_fourcc(*'MP4V')
+    fourcc = cv2.VideoWriter_fourcc(*'DIVX')
     video = cv2.VideoWriter(
         join(output_path, file_name),
         fourcc,
@@ -78,9 +79,11 @@ def generate_video(image_names):
 
     cv2.destroyAllWindows()
     video.release()
-    input_file = join(output_path,file_name)
-    output_file = file_name.replace("render", "web_render")
-    system(f"ffmpeg -y -i {abspath(input_file)} -vcodec h264 -preset ultrafast {abspath(join(output_path,output_file))}")
+    input_file = join(output_path, file_name)
+    output_file = file_name.replace(
+        "render", "web_render").replace("avi", "mp4")
+    system(
+        f"ffmpeg -y -i {abspath(input_file)} -vcodec h264 -preset ultrafast {abspath(join(output_path,output_file))}")
     print(f"Took {time.time()-start_time}s to render gif")
     return output_file
 
