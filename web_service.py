@@ -82,7 +82,7 @@ def generate_video(image_names):
     ffmpeg_out = render_name.replace(
         "render", "web_render").replace("avi", "mp4")
     system(
-        f"ffmpeg -y -i {ffmpeg_in} -vcodec h264 -preset ultrafast {abspath(join(output_path,ffmpeg_out))}")
+        f"ffmpeg -y -i {ffmpeg_in} -vcodec h264 -preset ultrafast -c copy {abspath(join(output_path,ffmpeg_out))}")
 
     print(f"Took {time.time()-start_time}s to render")
     return ffmpeg_out
