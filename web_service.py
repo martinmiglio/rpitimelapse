@@ -1,4 +1,5 @@
 import gc
+import multiprocessing
 import re
 import time
 from glob import glob
@@ -6,8 +7,9 @@ from os import listdir, remove, system
 from os.path import abspath, isfile, join
 
 import cv2
+import numpy as np
 from flask import Flask, render_template, request
-from PIL import Image, UnidentifiedImageError
+from joblib import Parallel, delayed
 
 width = 1280
 height = 720
@@ -59,13 +61,36 @@ def get_images(hours_ago):
 
 def generate_video(image_names):
     output_path = "static/"
-    file_name = f"render{int(time.time())}.avi"
-    file_list = glob(join(output_path, "*.mp4")) + \
+    # remove previous video files
+    to_remove = glob(join(output_path, "*.mp4")) + \
         glob(join(output_path, "*.avi"))
-    for f in file_list:
+    for f in to_remove:
         remove(f)
+
     start_time = time.time()
+
+    # split into threads
+    num_cores = multiprocessing.cpu_count()
+    thread_list = np.arrary_split(image_names, num_cores)
+    Parallel(n_jobs=num_cores, prefer="threads")(
+        delayed(video_thread)(thread_image_names, output_path, n) for n, thread_image_names in enumerate(thread_list))
+    
+    # encode split videos into one mp4
+    thread_names = sorted(glob(join(output_path, "*.avi")))
+    render_name = f"render{int(time.time())}.avi"
+    ffmpeg_in = " ".join([f"-i {abspath(name)}" for name in thread_names])
+    ffmpeg_out = render_name.replace(
+        "render", "web_render").replace("avi", "mp4")
+    system(
+        f"ffmpeg -y {ffmpeg_in} -vcodec h264 -preset ultrafast {abspath(join(output_path,ffmpeg_out))}")
+    
+    print(f"Took {time.time()-start_time}s to render")
+    return ffmpeg_out
+
+
+def video_thread(image_names, output_path, n):
     fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+    file_name = f"thread_{n}.avi"
     video = cv2.VideoWriter(
         join(output_path, file_name),
         fourcc,
@@ -79,13 +104,7 @@ def generate_video(image_names):
 
     cv2.destroyAllWindows()
     video.release()
-    input_file = join(output_path, file_name)
-    output_file = file_name.replace(
-        "render", "web_render").replace("avi", "mp4")
-    system(
-        f"ffmpeg -y -i {abspath(input_file)} -vcodec h264 -preset ultrafast {abspath(join(output_path,output_file))}")
-    print(f"Took {time.time()-start_time}s to render gif")
-    return output_file
+    return file_name
 
 
 if __name__ == '__main__':
