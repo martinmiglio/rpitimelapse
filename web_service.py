@@ -71,7 +71,7 @@ def generate_video(image_names):
 
     # split into threads
     num_cores = multiprocessing.cpu_count()
-    thread_list = np.split(np.array(image_names), num_cores)
+    thread_list = np.array_split(np.array(image_names), num_cores)
     Parallel(n_jobs=num_cores, prefer="threads")(
         delayed(video_thread)(thread_image_names, output_path, n) for n, thread_image_names in enumerate(thread_list))
     
