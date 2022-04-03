@@ -74,16 +74,16 @@ def generate_video(image_names):
     thread_list = np.array_split(np.array(image_names), num_cores)
     Parallel(n_jobs=num_cores, prefer="threads")(
         delayed(video_thread)(thread_image_names, output_path, n) for n, thread_image_names in enumerate(thread_list))
-    
+
     # encode split videos into one mp4
     thread_names = sorted(glob(join(output_path, "*.avi")))
     render_name = f"render{int(time.time())}.avi"
-    ffmpeg_in = " ".join([f"-i {abspath(name)}" for name in thread_names])
+    ffmpeg_in = f"\"concat:{'|'.join([f'{abspath(name)}' for name in thread_names])}\""
     ffmpeg_out = render_name.replace(
         "render", "web_render").replace("avi", "mp4")
     system(
-        f"ffmpeg -y {ffmpeg_in} -vcodec h264 -preset ultrafast {abspath(join(output_path,ffmpeg_out))}")
-    
+        f"ffmpeg -y -i {ffmpeg_in} -vcodec h264 -preset ultrafast {abspath(join(output_path,ffmpeg_out))}")
+
     print(f"Took {time.time()-start_time}s to render")
     return ffmpeg_out
 
