@@ -82,7 +82,7 @@ def generate_video(image_names):
     ffmpeg_out = render_name.replace(
         "render", "web_render").replace("avi", "mp4")
     system(
-        f"ffmpeg -y -i {ffmpeg_in} -vcodec h264 -preset ultrafast -c copy {abspath(join(output_path,ffmpeg_out))}")
+        f"ffmpeg -y -i {ffmpeg_in} -t 60 {abspath(join(output_path,ffmpeg_out))}")
 
     print(f"Took {time.time()-start_time}s to render")
     return ffmpeg_out
@@ -94,8 +94,7 @@ def video_thread(image_names, output_path, n):
     video = cv2.VideoWriter(
         join(output_path, file_name),
         fourcc,
-        frameSize=(width, height),
-        fps=len(image_names)/30
+        frameSize=(width, height)
     )
 
     for image_name in image_names:
