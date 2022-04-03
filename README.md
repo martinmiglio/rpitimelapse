@@ -2,7 +2,7 @@
 
 ## A timelapse capture and viewing module for Raspberry Pi.
 
-RPiTimeLapse is a collection of services handling the capture, rendering and display of timelapses. The capture service relies on Raspberry Pi's python library. A Flask web server hosts a user interface to slect the time period and then display a timelapse. The timelapse is rendered using multithreaded opencv2 to ffmpeg pipeline to create a web-ready mp4. 
+RPiTimeLapse is a collection of services handling the capture, rendering and display of timelapses. The capture service relies on Raspberry Pi's python camera library. A Flask web server hosts a user interface to slect the time period and then display a timelapse. The timelapse is rendered using a multithreaded opencv2 to ffmpeg pipeline to create a web-ready mp4 from the collected images. 
 
 ## Installation
 
