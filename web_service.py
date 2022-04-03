@@ -94,7 +94,8 @@ def video_thread(image_names, output_path, n):
     video = cv2.VideoWriter(
         join(output_path, file_name),
         fourcc,
-        frameSize=(width, height)
+        frameSize=(width, height),
+        fps=60
     )
 
     for image_name in image_names:
