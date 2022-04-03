@@ -73,7 +73,7 @@ def generate_video(image_names):
     num_cores = multiprocessing.cpu_count()
     thread_list = np.array_split(np.array(image_names), num_cores)
     Parallel(n_jobs=num_cores, prefer="threads")(
-        delayed(video_thread)(thread_image_names, output_path, n) for n, thread_image_names in enumerate(thread_list))
+        delayed(video_thread)(thread_image_names, output_path, n, num_cores) for n, thread_image_names in enumerate(thread_list))
 
     # encode split videos into one mp4
     thread_names = sorted(glob(join(output_path, "*.avi")))
@@ -82,20 +82,20 @@ def generate_video(image_names):
     ffmpeg_out = render_name.replace(
         "render", "web_render").replace("avi", "mp4")
     system(
-        f"ffmpeg -y -i {ffmpeg_in} -t 60 {abspath(join(output_path,ffmpeg_out))}")
+        f"ffmpeg -y -i {ffmpeg_in} {abspath(join(output_path,ffmpeg_out))}")
 
     print(f"Took {time.time()-start_time}s to render")
     return ffmpeg_out
 
 
-def video_thread(image_names, output_path, n):
+def video_thread(image_names, output_path, n, threads):
     fourcc = cv2.VideoWriter_fourcc(*'DIVX')
     file_name = f"thread_{n}.avi"
     video = cv2.VideoWriter(
         join(output_path, file_name),
         fourcc,
         frameSize=(width, height),
-        fps=60
+        fps=len(image_names)/(60/threads)
     )
 
     for image_name in image_names:
