@@ -10,3 +10,5 @@ Pillow==9.0.1
 pycodestyle==2.8.0
 toml==0.10.2
 Werkzeug==2.1.0
+rpi_ws281x==4.3.4
+adafruit-circuitpython-neopixel==6.3.0
