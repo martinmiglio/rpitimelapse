@@ -16,7 +16,7 @@ from joblib import Parallel, delayed
 width = 1280
 height = 720
 
-neopixel_pin = board.D10
+neopixel_pin = board.D18
 
 app = Flask(__name__)
 
@@ -125,4 +125,4 @@ def set_light():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=8000)
+    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=80)
