@@ -120,6 +120,7 @@ def set_light():
         field_names = ['R', 'G', 'B']
         form_data = request.form
         colors = tuple([int(form_data.get(name)) for name in field_names])
+        print(f"Setting LED to {colors}")
         neopixel.NeoPixel(neopixel_pin, 12).fill(colors)
         return light()
 
