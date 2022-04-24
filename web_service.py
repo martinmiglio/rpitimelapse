@@ -16,7 +16,7 @@ import board
 width = 1280
 height = 720
 
-neopixel_pin = board.D18
+neopixel_pin = board.D12
 neopixel_count = 12
 lights = neopixel.NeoPixel(neopixel_pin, neopixel_count, auto_write=False)
 
