@@ -117,8 +117,9 @@ def light():
 def set_light():
 
     def rgb_from_hex(hex_color):
-        hex_color.replace("#", '')
-        return tuple(int(hex_color[i:i + 2], 16) for i in (0, 2, 4))
+        return tuple([
+            int(hex_color.replace("#", '')[i:i + 2], 16) for i in (0, 2, 4)
+        ])
 
     if request.method == 'GET':
         return f"The URL /data is accessed directly. Try going to '/' to submit form"
