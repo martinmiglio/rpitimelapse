@@ -17,6 +17,7 @@ width = 1280
 height = 720
 
 neopixel_pin = board.D18
+lights = neopixel.NeoPixel(neopixel_pin, 12, auto_write=False)
 
 app = Flask(__name__)
 
@@ -114,16 +115,24 @@ def light():
 
 @app.route('/set_light', methods=['POST', 'GET'])
 def set_light():
+
+    def rgb_from_hex(hex_color):
+        hex_color.replace("#", '')
+        return tuple(int(hex_color[i:i + 2], 16) for i in (0, 2, 4))
+
     if request.method == 'GET':
         return f"The URL /data is accessed directly. Try going to '/' to submit form"
     if request.method == 'POST':
-        field_names = ['R', 'G', 'B']
         form_data = request.form
-        colors = tuple([int(form_data.get(name)) for name in field_names])
-        print(f"Setting LED to {colors}")
-        neopixel.NeoPixel(neopixel_pin, 12).fill(colors)
+        print(form_data)
+        color = form_data.get('color')
+        print(f"Setting LED to {color}")
+        [r, g, b] = rgb_from_hex(color)
+        for light in lights:
+            light.fill(r, g, b, 100)
+        lights.show()
         return light()
 
 
 if __name__ == '__main__':
-    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=80)
+    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=8000)
