@@ -17,7 +17,8 @@ width = 1280
 height = 720
 
 neopixel_pin = board.D18
-lights = neopixel.NeoPixel(neopixel_pin, 12, auto_write=False)
+neopixel_count = 12
+lights = neopixel.NeoPixel(neopixel_pin, neopixel_count, auto_write=False)
 
 app = Flask(__name__)
 
@@ -108,12 +109,8 @@ def data():
         return render_template('data.html', filename=video_name, width=width, height=height)
 
 
-@app.route('/light')
-def light():
-    return render_template('light_form.html')
 
-
-@app.route('/set_light', methods=['POST', 'GET'])
+@app.route('/light', methods=['POST', 'GET'])
 def set_light():
 
     def rgb_from_hex(hex_color):
@@ -122,16 +119,16 @@ def set_light():
         ])
 
     if request.method == 'GET':
-        return f"The URL /data is accessed directly. Try going to '/' to submit form"
+        return render_template('light_form.html')
     if request.method == 'POST':
         form_data = request.form
         print(form_data)
         color = rgb_from_hex(form_data.get('color'))
         print(f"Setting LED to {color}")
-        for light in lights:
-            light = color
+        for i in range(neopixel_count):
+            lights[i] = color
         lights.show()
-        return light()
+        return render_template('light_form.html')
 
 
 if __name__ == '__main__':
