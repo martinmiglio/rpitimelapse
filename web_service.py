@@ -8,10 +8,10 @@ from os.path import abspath, isfile, join
 
 import cv2
 import numpy as np
-import neopixel
-import board
 from flask import Flask, render_template, request
 from joblib import Parallel, delayed
+import neopixel
+import board
 
 width = 1280
 height = 720
@@ -126,11 +126,10 @@ def set_light():
     if request.method == 'POST':
         form_data = request.form
         print(form_data)
-        color = form_data.get('color')
+        color = rgb_from_hex(form_data.get('color'))
         print(f"Setting LED to {color}")
-        [r, g, b] = rgb_from_hex(color)
         for light in lights:
-            light.fill(r, g, b, 100)
+            light = color
         lights.show()
         return light()
 
