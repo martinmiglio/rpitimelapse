@@ -40,7 +40,7 @@ def data():
         IMAGE_DIRECTORY = "images"
         current_time = int(time.time())
         start_time = int(current_time - 3600 * hours_ago)
-        app.logger(f'Getting images starting at {start_time}')
+        app.logger.info(f'Getting images starting at {start_time}')
         files = []
         for f in sorted(listdir(IMAGE_DIRECTORY)):
             full_path = abspath(join(IMAGE_DIRECTORY, f))
@@ -79,29 +79,29 @@ def data():
 
         # track time
         start_time = time.time()
-        app.logger(f'{start_time}: Converting {len(image_names)} images...')
+        app.logger.info(f'{start_time}: Converting {len(image_names)} images...')
 
         # split into threads
         num_cores = multiprocessing.cpu_count()
-        app.logger(f'{start_time}: Using {num_cores} cores.')
+        app.logger.info(f'{start_time}: Using {num_cores} cores.')
         thread_list = np.array_split(np.array(image_names), num_cores)
         Parallel(n_jobs=num_cores, prefer="threads")(
             delayed(video_thread)(thread_image_names, output_path, n, num_cores) for n, thread_image_names in enumerate(thread_list))
 
         # reset timing
-        app.logger(f"Took {time.time()-start_time}s to render")
+        app.logger.info(f"Took {time.time()-start_time}s to render")
         start_time = time.time()
 
         # encode split videos into one mp4
         thread_names = sorted(glob(join(output_path, "*.avi")))
-        app.logger(f'{start_time}: Encoding {len(thread_names)} videos ...')
+        app.logger.info(f'{start_time}: Encoding {len(thread_names)} videos ...')
         render_name = f"render{int(time.time())}.avi"
         ffmpeg_in = f"\"concat:{'|'.join([f'{abspath(name)}' for name in thread_names])}\""
         ffmpeg_out = render_name.replace(
             "render", "web_render").replace("avi", "mp4")
         system(
             f"ffmpeg -y -i {ffmpeg_in} {abspath(join(output_path,ffmpeg_out))}")
-        app.logger(f"Took {time.time()-start_time}s to encode")
+        app.logger.info(f"Took {time.time()-start_time}s to encode")
 
         return ffmpeg_out
 
@@ -128,7 +128,7 @@ def set_light():
     if request.method == 'POST':
         form_data = request.form
         color = rgb_from_hex(form_data.get('color'))
-        app.logger(f"Setting LED to {color}")
+        app.logger.info(f"Setting LED to {color}")
         for i in range(neopixel_count):
             lights[i] = color
         lights.show()
