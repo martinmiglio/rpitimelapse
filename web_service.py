@@ -1,4 +1,3 @@
-from ast import Try
 import gc
 import multiprocessing
 import re
@@ -38,7 +37,8 @@ def data():
     def data_to_hours(button_string):
         if button_string == 'Now' or not button_string:
             return 0
-        value = int(re.search('[0-9]+', button_string).group())
+        value = re.search('[0-9]+', button_string)
+        value = 0 if value is None else int(value.group())
         return value*24 if "Day" in button_string else value
 
     def get_images(hours_ago):
@@ -77,12 +77,12 @@ def data():
                 fps=len(image_names)/(60/threads)
             )
             for image_name in image_names:
-                img = cv2.imread(join(input_path,image_name))
+                img = cv2.imread(join(input_path, image_name))
                 video.write(img)
             cv2.destroyAllWindows()
             video.release()
             return file_name
-        
+
         input_path = "images/"
         output_path = "static/"
 
@@ -117,7 +117,7 @@ def data():
         ffmpeg_out = render_name.replace(
             "render", "web_render").replace("avi", "mp4")
         system(
-            f"ffmpeg -y -i {ffmpeg_in} {abspath(join(output_path,ffmpeg_out))}")
+            f"ffmpeg -y -i {ffmpeg_in} {abspath(join(output_path,ffmpeg_out))}".replace(';', ''))
         app.logger.info(f"Took {time.time()-start_time}s to encode")
 
         return ffmpeg_out
