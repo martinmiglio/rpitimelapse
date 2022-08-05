@@ -74,27 +74,14 @@ def data_to_hours(button_string):
 def get_images(hours_ago):
     IMAGE_DIRECTORY = "images"
     current_time = int(time.time())
-    if hours_ago != 0:
-        start_time = int(current_time - 3600 * hours_ago)
-        app.logger.info(f'Getting images starting at {start_time}')
-        files = []
-        for f in sorted(listdir(IMAGE_DIRECTORY)):
-            full_path = abspath(join(IMAGE_DIRECTORY, f))
-            if isfile(full_path):
-                match = re.search('img(.*).jpg', f)
-                if match is not None:
-                    photo_time = int(match.group(1))
-                    if photo_time > start_time and photo_time < current_time - 120:
-                        files.append(full_path)
-        return files
+    start_time = int(current_time - 3600 * hours_ago)
+    app.logger.info(f'Getting images starting at {start_time}')
+    files = sorted(filter(re.compile('img(.*).jpg').match,
+                   listdir(IMAGE_DIRECTORY)), reverse=True)
+    if hours_ago == 0:
+        return [files[0]]
     else:
-        return [sorted(
-            filter(
-                re.compile('img(.*).jpg').match,
-                listdir(IMAGE_DIRECTORY)
-            ),
-            reverse=True
-        )[0]]
+        return [abspath(join(IMAGE_DIRECTORY, file)) for file in files if current_time - 120 > int(file) > start_time]
 
 
 def generate_video(image_names):
