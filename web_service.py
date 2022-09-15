@@ -81,7 +81,7 @@ def get_images(hours_ago):
     if hours_ago == 0:
         return [files[0]]
     else:
-        return [abspath(join(IMAGE_DIRECTORY, file)) for file in files if current_time - 120 > int(file) > start_time]
+        return [abspath(join(IMAGE_DIRECTORY, file)) for file in files if current_time - 120 > int(file.replace('img','').replace('.jpg','')) > start_time]
 
 
 def generate_video(image_names):
